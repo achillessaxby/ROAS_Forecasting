@@ -1,0 +1,36 @@
+# ---- Client data & artifacts: never commit ----
+*.csv
+*.tsv
+*.parquet
+*.pkl
+*.pickle
+*.joblib
+*.xlsx
+*.xls
+*.zip
+*.docx
+*.png
+*.jpg
+*.jpeg
+*.svg
+**/catboost_info/
+**/validation_results*/
+**/m1_validation_results/
+**/cache/
+**/metadata.json
+**/extrapolation_params.json
+**/models/
+**/models_xgb*/
+**/models_pwlr*/
+**/Models - Model saving files*/
+# ---- Environment ----
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.venv/
+venv/
+.env
+.env.*
+*.json.key
+*service-account*.json
+.DS_Store

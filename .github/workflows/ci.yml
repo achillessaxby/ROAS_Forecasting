@@ -1,0 +1,43 @@
+name: v2
+on:
+  push:
+  pull_request:
+defaults:
+  run:
+    working-directory: v2   # v1 is view-only (needs client data and GCP) and is not built
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.10", "3.12"]
+        backend: [sklearn, xgboost]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "${{ matrix.python }}"}
+      - run: pip install -e ".[api,dev]"
+      - if: matrix.backend == 'xgboost'
+        run: pip install -e ".[xgboost]"
+      - run: ruff check src services tests scripts run_demo.py
+      - run: pytest
+        env: {ROAS_TEST_BACKEND: "${{ matrix.backend }}"}
+
+  docker-stack:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: cp .env.example .env && mkdir -p data registry && sudo chown 1000:1000 data registry
+      - run: docker compose up --build -d
+      - name: wait for the API to become healthy
+        run: |
+          for i in $(seq 1 60); do
+            curl -fsS localhost:8080/health && exit 0
+            sleep 10
+          done
+          docker compose logs; exit 1
+      - run: python scripts/smoke_test.py
+      - run: curl -fsS localhost:8501/_stcore/health
+      - if: always()
+        run: docker compose logs --tail=50 && docker compose down

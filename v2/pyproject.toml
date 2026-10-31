@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "roas-forecasting"
+version = "2.0.0"
+description = "Cohort ROAS forecasting platform - v2 (post-engagement remediation)"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "numpy>=1.26,<3",
+  "pandas>=2.2,<4",
+  "scikit-learn>=1.4,<2",
+  "scipy>=1.11",
+  "joblib>=1.3",
+  "pydantic>=2.7,<3",
+]
+
+[project.optional-dependencies]
+xgboost = ["xgboost>=2.0,<4"]
+api = ["fastapi>=0.111", "uvicorn[standard]>=0.29"]
+app = ["streamlit>=1.32"]
+dev = ["pytest>=8", "httpx>=0.27", "ruff>=0.5"]
+
+[tool.setuptools.packages.find]
+where = ["src", "."]
+include = ["roas*", "services*"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src", "."]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+# explicit rule set so new ruff releases do not change what CI checks
+select = ["E4", "E7", "E9", "F", "I", "UP", "B"]

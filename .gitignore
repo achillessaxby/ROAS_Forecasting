@@ -1,0 +1,20 @@
+# repository-wide safety net: never commit data, models or environments
+*.csv
+*.tsv
+*.parquet
+*.pkl
+*.pickle
+*.joblib
+*.xlsx
+*.zip
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.env
+.env.*
+*service-account*.json
+.DS_Store
+v2/data/
+v2/registry/
+v2/.env

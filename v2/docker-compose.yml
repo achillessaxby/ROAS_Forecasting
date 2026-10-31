@@ -1,0 +1,63 @@
+# Local production-style stack:  docker compose up --build
+#   pipeline : one-shot job  - synthetic data -> train -> walk-forward back-test -> promotion gate
+#   api      : Forecast API  - http://localhost:8080/docs   (requires X-API-Key)
+#   app      : Analytics Suite - http://localhost:8501
+# The API and app start only after the pipeline has finished successfully and promoted a model version.
+name: roas-forecasting
+
+x-image: &image
+  build:
+    context: .
+    dockerfile: docker/Dockerfile
+  image: roas-forecasting:local
+
+services:
+  pipeline:
+    <<: *image
+    command: ["python", "run_demo.py", "--data", "/data/synthetic", "--registry", "/registry"]
+    environment:
+      ROAS_BACKEND: ${ROAS_BACKEND:-auto}   # auto = XGBoost (installed in the image); "sklearn" reproduces README numbers exactly
+    volumes:
+      - ./data:/data
+      - ./registry:/registry
+
+  api:
+    <<: *image
+    command: ["uvicorn", "services.api.main:app", "--host", "0.0.0.0", "--port", "8080"]
+    environment:
+      ROAS_REGISTRY: /registry
+      ROAS_API_KEYS: ${ROAS_API_KEYS:?set ROAS_API_KEYS in .env (copy .env.example)}
+    volumes:
+      - ./registry:/registry:ro
+    ports:
+      - "127.0.0.1:8080:8080"
+    depends_on:
+      pipeline:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+
+  app:
+    <<: *image
+    command: ["streamlit", "run", "services/app/Home.py", "--server.port=8501", "--server.address=0.0.0.0",
+              "--server.headless=true", "--server.enableXsrfProtection=true", "--browser.gatherUsageStats=false"]
+    environment:
+      ROAS_REGISTRY: /registry
+      ROAS_REPORTS: /registry/reports
+    volumes:
+      - ./registry:/registry:ro
+    ports:
+      - "127.0.0.1:8501:8501"
+    depends_on:
+      pipeline:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8501/_stcore/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
