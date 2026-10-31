@@ -8,7 +8,7 @@ import streamlit as st
 
 # Configuration
 MAX_MONTHS = 12
-BUCKET_NAME = "m1m2_notebook"
+BUCKET_NAME = "your-gcs-bucket"  # placeholder: real bucket name removed
 DATA_PATH = "Models - Training/Latest Data/Segregated/"
 HELPER_PATH = ""
 

@@ -16,7 +16,7 @@ from google.cloud import storage
 from typing import Dict, List, Optional, Any
 
 # Configuration
-BUCKET_NAME = "m1m2_notebook"
+BUCKET_NAME = "your-gcs-bucket"  # placeholder: real bucket name removed
 CACHE_PATH = "validation_results/"
 
 # Error themes

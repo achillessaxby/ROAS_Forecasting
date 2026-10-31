@@ -22,7 +22,18 @@ Without Docker: `pip install -e ".[api,app,xgboost,dev]" && python run_demo.py &
 
 ## Author's role
 
-> _To complete: what I designed, built and owned in v1 (and with whom), how it was used, and what v2 demonstrates._
+I was the sole builder of v1, end to end:
+
+- **Modelling:** designed and trained the per-game M1 (spend-driven) and M2 (history-driven) XGBoost quantile models
+  that produce the bad / expected / good ROAS bands, plus the category-alpha spend scaling.
+- **Forecast API:** built and deployed the FastAPI service on Google Cloud Run that serves those forecasts.
+- **Validation App:** built and deployed the Streamlit app the team used to compare forecasts with actuals.
+- **Operations:** owned the deployment, model refreshes and data pipeline into Cloud Storage.
+
+v2 is my own follow-up: the same approach rebuilt as a runnable local sample on synthetic data, with the
+review findings from v1 fixed and covered by tests.
+
+The v1 code here holds no credentials, keys or service URLs, so it cannot reach the client's cloud resources.
 
 ## Notice
 

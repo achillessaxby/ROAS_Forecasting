@@ -23,7 +23,7 @@ category_averages_df = None
 game_to_category = {}
 
 # GCS configuration
-BUCKET_NAME = "m1m2_notebook"
+BUCKET_NAME = "your-gcs-bucket"  # placeholder: real bucket name removed
 DATA_PATH = "Models - Training/Latest Data/Segregated/"
 HELPER_PATH = ""  # helper CSVs location if different, leave empty if bucket root
 

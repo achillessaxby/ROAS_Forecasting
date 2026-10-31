@@ -14,7 +14,7 @@ from google.cloud import storage
 import io
 
 # Configuration
-BUCKET_NAME = "m1m2_notebook"
+BUCKET_NAME = "your-gcs-bucket"  # placeholder: real bucket name removed
 CACHE_PATH = "validation_results/"
 
 st.title("Underlying Table")

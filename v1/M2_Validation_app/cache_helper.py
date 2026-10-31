@@ -17,7 +17,7 @@ from typing import Dict, Any, Optional, Tuple, List
 import streamlit as st
 
 # GCS Configuration
-BUCKET_NAME = "m1m2_notebook"
+BUCKET_NAME = "your-gcs-bucket"  # placeholder: real bucket name removed
 CACHE_FOLDER = "cache/predictions/"
 CACHE_VERSION = "v2.0"
 

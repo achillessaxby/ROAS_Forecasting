@@ -44,7 +44,7 @@ in-app purchases).
 
 ```mermaid
 flowchart TD
-    subgraph SRC["Source data · gs://m1m2_notebook (mirrored by m1m2_notebook/)"]
+    subgraph SRC["Source data · gs://your-gcs-bucket (mirrored by m1m2_notebook/)"]
         D["Per-game cohort files<br/>Latest Data/Segregated/&lt;GAME&gt;_Dataset_12_2024.csv"]
         CFG["config.json<br/>per-game feature selection"]
     end
@@ -245,7 +245,7 @@ them. Client accuracy figures are not reproduced here.
 | M1 | Model Validation | `M1_Validation_app.py` + `m1_validation_helper.py` | Per-game cohort CSVs in GCS; cases computed on the fly |
 | M1 | 6-Month Forecasting | `forecast_tool_4.py` | Cohort CSVs + helper tables (alpha, game metrics) |
 | M1 | Underlying Table | `m1_underlying_table.py` | All cases × cohorts × months, exportable |
-| M2 | Model Validation | `M2_Validation_app_gcs_only.py` | `gs://m1m2_notebook/validation_results/metadata.json` + `games/<GAME>_complete.parquet` |
+| M2 | Model Validation | `M2_Validation_app_gcs_only.py` | `gs://your-gcs-bucket/validation_results/metadata.json` + `games/<GAME>_complete.parquet` |
 | M2 | 6-Month Forecasting | `forecast_tool_m2.py` | Models in GCS (fallback loader `model_fix_utils.py`) |
 | M2 | Underlying Table | `underlying_table.py` | Validation cache, exportable |
 
@@ -278,7 +278,7 @@ port 8080. XSRF protection is on. GCS access uses the Cloud Run service account;
 | Images | Artifact Registry `asia-southeast1-docker.pkg.dev/<project>/<repo>/<image>` |
 | Validation App | Cloud Run `m2-validation-app`: 2 vCPU, 2 GiB, concurrency 10, max 20 instances, VPC egress `private-ranges-only` on the client network/subnet, **authenticated access only** |
 | Forecast API | Cloud Run service from `fastapi-v2/app/Dockerfile`, port 8080, **authenticated access only** |
-| Storage | `gs://m1m2_notebook`: mirrors `m1m2_notebook/` (data, models, prediction store, `validation_results/`) |
+| Storage | `gs://your-gcs-bucket`: mirrors `m1m2_notebook/` (data, models, prediction store, `validation_results/`) |
 | Training | Vertex AI Workbench (Jupyter), notebooks executed headless with papermill |
 | Identity | Cloud Run service account with read access to the bucket; callers need `roles/run.invoker` (or IAP for the app) |
 
@@ -298,7 +298,7 @@ The API is deployed the same way from `fastapi-v2/app/` (build → push → `gcl
 
 ## 11. Operations: the monthly refresh
 
-1. Land the new month's cohort files in `gs://m1m2_notebook/Models - Training/Latest Data/Segregated/`.
+1. Land the new month's cohort files in `gs://your-gcs-bucket/Models - Training/Latest Data/Segregated/`.
 2. Run `m1_all.ipynb` and `m2_all.ipynb` with papermill on Vertex AI Workbench: models + per-game predictions.
 3. Run the consolidation notebooks (`abc.ipynb`): `final_M1.csv`, `final_M2.csv`, error tables, confidence.
 4. Run `M2/offline_error_cache_generation.py` and upload `validation_results/`. The Validation App picks it up.
