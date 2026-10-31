@@ -53,8 +53,8 @@ Requires **Docker Desktop** (macOS / Windows) or Docker Engine with the Compose 
 
 ```bash
 # 1. Get the code
-git clone https://github.com/<owner>/roas-forecasting-showcase.git
-cd roas-forecasting-showcase/v2
+git clone https://github.com/achillessaxby/ROAS_Forecasting.git
+cd ROAS_Forecasting/v2
 
 # 2. Configure the API key
 cp .env.example .env                        # Windows PowerShell: Copy-Item .env.example .env
@@ -67,7 +67,7 @@ When the logs show `PASSED - v2025-09 is now CURRENT` and the API reports health
 
 ```bash
 # 4. Verify the API: health, auth, forecast, input validation
-python scripts/smoke_test.py               # Python 3 only; no packages needed
+python3 scripts/smoke_test.py              # Python 3 only; no packages needed (Windows: py scripts/smoke_test.py)
 ```
 
 Expected:
@@ -103,7 +103,7 @@ curl -s -X POST localhost:8080/v2/forecast \
 Requires **Python 3.10–3.13**.
 
 ```bash
-cd roas-forecasting-showcase/v2
+cd ROAS_Forecasting/v2
 python3 -m venv .venv
 source .venv/bin/activate                   # Windows PowerShell: .venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip

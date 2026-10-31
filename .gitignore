@@ -13,6 +13,7 @@ __pycache__/
 *.py[cod]
 .env
 .env.*
+!.env.example
 *service-account*.json
 .DS_Store
 v2/data/

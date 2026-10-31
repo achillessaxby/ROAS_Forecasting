@@ -15,7 +15,7 @@ within what range?"*
 cd v2
 cp .env.example .env
 docker compose up --build          # pipeline → API (localhost:8080) + app (localhost:8501)
-python scripts/smoke_test.py       # in a second terminal
+python3 scripts/smoke_test.py      # in a second terminal
 ```
 
 Without Docker: `pip install -e ".[api,app,xgboost,dev]" && python run_demo.py && pytest` (see [v2/README.md](v2/README.md)).
